@@ -1,0 +1,8 @@
+app_name: "FinancePilot"
+
+logging:
+  log_dir: 'logs'
+  log_file: 'app.log'
+  level: 'DEBUG'
+  max_bytes: 1048576 # 1MB
+  backup_count: 3
