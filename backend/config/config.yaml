@@ -6,3 +6,7 @@ logging:
   level: 'DEBUG'
   max_bytes: 1048576 # 1MB
   backup_count: 3
+
+chunking:
+  size: 1200
+  overlap: 200

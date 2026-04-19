@@ -4,4 +4,6 @@ python-dotenv
 fastapi
 uvicorn
 pymongo
-
+llama-cloud
+llama-parse
+langchain-text-splitters
