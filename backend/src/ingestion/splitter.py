@@ -1,12 +1,12 @@
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 from utils.logging import set_logger
-from utils.config import load_config
-import os, re, yaml
+from utils.config import get_config
+import re
 logger = set_logger(__name__)
 
 class DocumentSplitter:
-    def __init__(self, config:dict):
-        chunk_config = config.get("chunking",{})
+    def __init__(self):
+        chunk_config = get_config("chunking")
         self.chunk_size = chunk_config.get("size",1200)
         self.chunk_overlap = chunk_config.get("overlap",200)
 
@@ -52,8 +52,8 @@ class DocumentSplitter:
 
         final_docs = []
         for item in parsed_results:
-            page_content = item("content","")
-            page_num = item("page",-1)
+            page_content = item.get("content", "")
+            page_num = item.get("page", -1)
             page_content = re.sub(r'\n(?:page|pg)\s*\d+\s*\n', '\n', page_content, flags=re.IGNORECASE)
             sections = self.header_splitter.split_text(page_content)
 

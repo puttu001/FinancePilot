@@ -7,3 +7,6 @@ pymongo
 llama-cloud
 llama-parse
 langchain-text-splitters
+langchain-qdrant
+qdrant-client
+fastembed

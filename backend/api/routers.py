@@ -14,6 +14,3 @@ router = APIRouter(prefix="/api")
 def health_check():
     logger.info('Health Status fetched.')
     return {'FinancePilot':'A financial intelligent system','status':'ok'}
-
-@router.get('/data-ingestion')
-def data_ingestion()

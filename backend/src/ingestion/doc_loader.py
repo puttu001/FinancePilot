@@ -1,9 +1,17 @@
 import os
+import inspect
 from llama_parse import LlamaParse
 from utils.logging import set_logger
 from dotenv import load_dotenv
 load_dotenv()
 logger = set_logger(__name__)
+
+
+async def _maybe_await(result):
+    """Handle APIs that may return either direct values or awaitables."""
+    if inspect.isawaitable(result):
+        return await result
+    return result
 
 class DocumentLoader:
     def __init__(self):
@@ -18,9 +26,13 @@ class DocumentLoader:
             result_type="markdown",
             extract_layout=True
         )
-        json_result = await parser.get_json_result(file_path)
+        # json_result = await parser.get_json_result(file_path)
+        json_result = await _maybe_await(parser.get_json_result(file_path))
 
         premium_pages = []
+        if not json_result:
+            logger.warning(f"LlamaParse returned no results for {file_path}")
+            return []
         pages = json_result[0].get("pages",[])
 
         for page in pages:
@@ -32,8 +44,9 @@ class DocumentLoader:
     
     async def load_and_parse(self,file_path):
         #finding pages needing premium parser
-        premium_pages_int = self.get_premium_pages(file_path)
+        premium_pages_int = await self.get_premium_pages(file_path)
         logger.info(f"Identified premium pages: {premium_pages_int}")
+        premium_map = {}
 
         #standard-parsing for whole document
         std_parser = LlamaParse(
@@ -41,11 +54,11 @@ class DocumentLoader:
             result_type="markdown",
             split_by_page=True
         )
-        all_docs = std_parser.load_data(file_path)
+        all_docs = await _maybe_await(std_parser.load_data(file_path))
 
         #premium_parsing for premium pages
         if premium_pages_int:
-            target_pages_str = ",".join(map(str,[p-i for p in premium_pages_int]))
+            target_pages_str = ",".join(map(str, [p - 1 for p in premium_pages_int]))
 
             premium_parser = LlamaParse(
                 api_key=self.api_key,
@@ -54,7 +67,7 @@ class DocumentLoader:
                 target_pages=target_pages_str,
                 split_by_page=True
             )
-            premium_docs = await premium_parser.load_data(file_path)
+            premium_docs = await _maybe_await(premium_parser.load_data(file_path))
             # Map the high-quality results back to their 1-based page numbers
             premium_map = {p_num: doc.text for p_num,doc in zip(premium_pages_int,premium_docs)}
 
