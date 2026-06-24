@@ -10,3 +10,4 @@ langchain-text-splitters
 langchain-qdrant
 qdrant-client
 fastembed
+sentence-transformers

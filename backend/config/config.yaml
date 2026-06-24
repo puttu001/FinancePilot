@@ -18,7 +18,33 @@ embeddings:
   SPARSE_VECTOR_NAME: "text-sparse"
   DENSE_VECTOR_SIZE: 3072
 
+retrieval:
+  default_k: 10
+  multi_query_k: 5
+
+reranker:
+  model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+  top_n: 5
+  score_threshold: 0.01
+
 vector_db:
   collection_name: "FinancePilot"
   qdrant_url: ${QDRANT_URL}
   qdrant_api_key: ${QDRANT_API_KEY}
+
+langsmith:
+  project_name: FinancePilot
+  tracing_enabled: false
+
+
+# evaluation:
+#   confidence:
+#     retrieval_threshold: 0.75
+#     low_confidence_action: "flag"  # flag | fallback | abstain
+#   llm_judge:
+#     model: "gpt-4o-mini"
+#     criteria: ["groundedness", "financial_accuracy", "hallucination"]
+#   rag_metrics:
+#     framework: "deepeval"  # deepeval | ragas
+#     metrics: ["faithfulness", "contextual_relevancy", "answer_relevancy"]
+#     dataset_dir: "data/eval_datasets"
