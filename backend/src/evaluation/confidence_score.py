@@ -1,0 +1,1 @@
+# confidence.py    ← HallucinationController + AnswerValidator merged here
