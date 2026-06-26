@@ -212,7 +212,7 @@ class LLMClient:
             )
 
             logger.info(
-                "LLM response: model=%s, latency=%.0fms, tokens=%d→%d, valid=%s",
+                "LLM response: model=%s, latency=%.0fms, tokens=%d->%d, valid=%s",
                 self._model_name, latency_ms,
                 result.input_tokens, result.output_tokens, is_valid,
             )

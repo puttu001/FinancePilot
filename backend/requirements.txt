@@ -11,3 +11,4 @@ langchain-qdrant
 qdrant-client
 fastembed
 sentence-transformers
+langsmith

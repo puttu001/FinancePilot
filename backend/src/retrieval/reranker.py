@@ -281,7 +281,7 @@ class Reranker:
 
         if result:
             logger.info(
-                "Rerank complete: %d → %d chunks, scores: [%.3f ... %.3f]",
+                "Rerank complete: %d -> %d chunks, scores: [%.3f ... %.3f]",
                 len(chunks), len(result),
                 result[0].rerank_score, result[-1].rerank_score,
             )

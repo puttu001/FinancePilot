@@ -132,13 +132,21 @@ class Retriever:
         if qdrant_filter:
             search_kwargs["filter"] = qdrant_filter
 
-        # similarity_search_with_score returns List[Tuple[Document, float]]
-        # The embedding happens INSIDE this call — we never touch vectors directly
-        results: List[Tuple[Document, float]] = (
-            await self._vector_store.asimilarity_search_with_score(
+        try:
+            results: List[Tuple[Document, float]] = (
+                await self._vector_store.asimilarity_search_with_score(
+                    query, **search_kwargs
+                )
+            )
+        except Exception as e:
+            logger.error("Async search failed: %s. Falling back to sync search.", str(e))
+            import asyncio
+            results = await asyncio.to_thread(
+                self._vector_store.similarity_search_with_score,
                 query, **search_kwargs
             )
-        )
+
+        logger.info("Search returned %d results for query: '%s'", len(results), query[:50])
 
         return [
             RetrievedChunk(document=doc, score=score, source_query=query)
@@ -317,7 +325,7 @@ class Retriever:
 
         # Step 1: Enhance the query with financial context
         enhanced_query = self._query_enhancer.enhance_query(query)
-        logger.info("Enhanced query: '%s' → '%s'", query, enhanced_query)
+        logger.info("Enhanced query: '%s' -> '%s'", query, enhanced_query)
 
         # Step 2: Check if this is a calculation request
         is_calc, metric_name, required_inputs = self._query_enhancer.detect_calculation_request(query)

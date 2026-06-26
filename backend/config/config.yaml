@@ -19,13 +19,13 @@ embeddings:
   DENSE_VECTOR_SIZE: 3072
 
 retrieval:
-  default_k: 10
+  default_k: 5
   multi_query_k: 5
 
 reranker:
   model: "cross-encoder/ms-marco-MiniLM-L-6-v2"
   top_n: 5
-  score_threshold: 0.01
+  score_threshold: -5.0
 
 generation:
   model: "gpt-4o-mini"
@@ -39,7 +39,7 @@ vector_db:
 
 langsmith:
   project_name: FinancePilot
-  tracing_enabled: false
+  tracing_enabled: true
 
 
 # evaluation:
