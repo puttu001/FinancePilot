@@ -1,0 +1,232 @@
+[
+  {
+    "id": "ril-001",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was the EBITDA margin for Retail in FY 2025-2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "EBITDA for the year stood at H 27,034 crore, translating into an EBITDA margin of 8.2%, slight moderation due to growing contribution of hyper-local commerce.",
+    "expected_page": 9,
+    "reference_answer": "The Retail business reported an EBITDA margin of 8.2% in FY 2025-2026.",
+    "notes": "Numerical financial metric embedded in narrative text. Useful for testing retrieval of financial performance metrics from the Retail business section."
+  },
+  {
+    "id": "ril-002",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What dividend did RIL's Board of Directors recommend for FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "The Board of Directors have recommended a dividend of ₹ 6/- (Rupees Six only) per equity share of ₹ 10/- (Rupees Ten only) each, aggregating ₹ 8,119 crore for the financial year ended March 31, 2026.",
+    "expected_page": 78,
+    "reference_answer": "RIL's Board of Directors recommended a dividend of ₹6 per equity share (face value ₹10 each) for FY2025-26, aggregating ₹8,119 crore — up from ₹5.50 per share the previous year.",
+    "notes": "Dividend/distribution fact, distinct from revenue/EBITDA metrics already covered. Good test of retrieval on a governance/shareholder-return disclosure rather than a P&L figure. VERIFY: confirm whether the ₹ glyph extracts as 'H' on this page too, same as ril-001 — swap if needed before trusting the substring match."
+  },
+  {
+    "id": "ril-003",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's standalone Total Assets as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "Total Assets 11,65,809 10,22,401",
+    "expected_page": 112,
+    "reference_answer": "RIL's standalone Total Assets as at 31st March 2026 were ₹11,65,809 crore, compared to ₹10,22,401 crore as at 31st March 2025.",
+    "notes": "Pure balance-sheet table row, no narrative sentence wrapping the figure - deliberately stress-tests whether table data survives chunking/retrieval (RecursiveCharacterTextSplitter has no table awareness, and is_junk_chunk's numeric-only filter could discard a fragment if the row label gets split from the number). VERIFY: check the actual chunked/extracted text for this row once ingested - LlamaParse's markdown table formatting may not match the plain-text guess used here; '11,65,809' alone is the safer anchor since 'Total Assets' as a label appears three times in this table."
+  },
+  {
+    "id": "ril-004",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's standalone Total Other Equity balance as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "Total 5,29,555 30,576 (7,443) - 15 - 5,52,703",
+    "expected_page": 116,
+    "reference_answer": "RIL's standalone Total Other Equity balance as at 31st March 2026 was ₹5,52,703 crore, up from ₹5,29,555 crore at the start of the year, driven by ₹30,576 crore of total comprehensive income offset by ₹7,443 crore in dividends paid.",
+    "notes": "Multi-column equity roll-forward table (Statement of Changes in Equity), structurally different from the two-year balance-sheet table drafted for page 112 - tests retrieval on a wider/more complex table shape. VERIFY: check actual extracted text for this row's formatting before trusting the exact snippet; consider using just '5,52,703' as a shorter, more robust anchor if the full row doesn't extract cleanly."
+  },
+  {
+    "id": "ril-005",
+    "file_id": "data/raw/ril.pdf",
+    "query": "How much of RIL's Capital Work-in-Progress related to Project Development Expenditure as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "₹ 30,853 crore (Previous Year ₹ 33,879 crore) on account of Project Development Expenditure.",
+    "expected_page": 212,
+    "reference_answer": "RIL's Capital Work-in-Progress included ₹30,853 crore on account of Project Development Expenditure as at 31st March 2026, compared to ₹33,879 crore in the previous year.",
+    "notes": "Deep footnote (Note 1.2(i) to Consolidated Financial Statements), deliberately obscure and far from the headline financial highlights near the front of the report - good regression canary for whether retrieval can find specific disclosures buried in numbered notes-to-accounts. VERIFY: check whether the ₹ glyph extracts as 'H' on this page too, same as prior entries."
+  },
+  {
+    "id": "ril-006",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's total tax expense (consolidated) for FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "Total Tax Expenses 27,552 25,230",
+    "expected_page": 218,
+    "reference_answer": "RIL's consolidated total tax expense for FY2025-26 was ₹27,552 crore — comprising ₹9,736 crore of current tax and ₹17,816 crore of deferred tax — compared to ₹25,230 crore in the previous year.",
+    "notes": "Note 13 (Taxation) to Consolidated Financial Statements. New topic (tax) not yet covered by prior entries; another pure-table stress test, and cross-checkable against the Current Tax/Deferred Tax lines already visible in the FY2025-26 P&L on page 78. VERIFY: exact extracted formatting of this row and currency glyph, same as prior entries."
+  },
+  {
+    "id": "ril-007",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What bonus share issue did RIL complete during FY2024-25, and how did it affect paid-up capital?",
+    "query_type": "qa",
+    "expected_context_snippet": "the Company had allotted 676,61,86,449 bonus equity shares of ₹ 10 each (fully paid up) in the proportion of 1 bonus equity share for every 1 fully paid up equity share... the paid-up capital of the Company increased to ₹ 13,532 crore from ₹ 6,766 crore. The paid-up capital on account of bonus issue of ₹ 6,766 crore has been appropriated from securities premium.",
+    "expected_page": 220,
+    "reference_answer": "During FY2024-25, RIL issued bonus equity shares in a 1:1 ratio (one bonus share for every fully paid-up share held), allotting 676,61,86,449 bonus shares of ₹10 each on October 29, 2024. This increased paid-up capital from ₹6,766 crore to ₹13,532 crore, funded by appropriating ₹6,766 crore from securities premium.",
+    "notes": "Purely narrative disclosure (Note 14.8), no table involved - tests retrieval on longer prose passages rather than short table rows. Cross-references the paid-up capital figures already in ril-004's equity reconciliation table, useful for spotting whether a future comparison/multi-hop query type could link the two. VERIFY: currency glyph encoding same as prior entries."
+  },
+  {
+    "id": "ril-008",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's total Non-Current Borrowings as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "Total 2,70,751 25,965 2,36,899 29,323",
+    "expected_page": 222,
+    "reference_answer": "RIL's consolidated total Non-Current Borrowings as at 31st March 2026 were ₹2,70,751 crore, with an additional ₹25,965 crore classified as Current, compared to ₹2,36,899 crore (Non-Current) and ₹29,323 crore (Current) as at 31st March 2025.",
+    "notes": "Note 16, Borrowings breakdown table (Secured + Unsecured at Amortised Cost) - four-column table (Non-Current/Current x two years), a wider/more complex shape than prior tables. VERIFY: exact extraction formatting; '2,70,751' alone is the safer anchor if the full row doesn't extract cleanly."
+  },
+  {
+    "id": "ril-009",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What assets secure RIL's Non-Convertible Debentures as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "₹ 20,545 crore (Previous Year ₹ 20,415 crore) are secured by way of hypothecation of all the movable plant and machinery, electrical equipments, installations and capital work in progress, both present and future, located at Hazira, Dahej, Patalganga, Nagothane and Silvassa Manufacturing Divisions of the Company.",
+    "expected_page": 222,
+    "reference_answer": "As at 31st March 2026, ₹20,545 crore of RIL's Secured Non-Convertible Debentures are secured by hypothecation of movable plant and machinery, electrical equipment, installations, and capital work-in-progress located at the Company's Hazira, Dahej, Patalganga, Nagothane, and Silvassa manufacturing divisions.",
+    "notes": "Note 16.1(a), narrative security-disclosure footnote. Cross-references the ₹20,545 crore figure in ril-008's Secured Non-Convertible Debentures row - useful pair for testing whether a table figure and its explanatory footnote are both retrievable together. VERIFY: currency glyph encoding same as prior entries."
+  },
+  {
+    "id": "ril-010",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's Digital Services segment EBITDA for FY2025-26, and what was its growth rate?",
+    "query_type": "qa",
+    "expected_context_snippet": "EBITDA H76,560 Crore 17.8% US$ 8.1 Billion",
+    "expected_page": 2,
+    "reference_answer": "RIL's Digital Services segment reported EBITDA of ₹76,560 crore for FY2025-26, up 17.8% year-on-year (approximately US$8.1 billion).",
+    "notes": "Infographic 'at a glance' segment panel, not prose or a table - tests a third extraction risk category (visual side-panel layout with growth arrows). HIGH UNCERTAINTY: verify how this actually extracts once ingested; arrows/colored panels may not convert to clean text at all."
+  },
+  {
+    "id": "ril-011",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's Oil to Chemicals segment revenue for FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "Revenue H6,62,401 Crore 5.7% US$ 69.9 Billion",
+    "expected_page": 2,
+    "reference_answer": "RIL's Oil to Chemicals (O2C) segment reported revenue of ₹6,62,401 crore for FY2025-26, up 5.7% year-on-year (approximately US$69.9 billion) — the company's largest segment by revenue.",
+    "notes": "Same infographic-panel layout as ril-010. This is RIL's largest segment by revenue, good for testing retrieval when a query implies 'biggest'/'largest' without stating the segment name directly. VERIFY extraction formatting."
+  },
+  {
+    "id": "ril-012",
+    "file_id": "data/raw/ril.pdf",
+    "query": "How did RIL's Oil and Gas segment perform in FY2025-26 compared to the previous year?",
+    "query_type": "qa",
+    "expected_context_snippet": "Revenue H23,861 Crore 5.4% US$ 2.5 Billion EBITDA H19,050 Crore 10.1% US$ 2.0 Billion",
+    "expected_page": 2,
+    "reference_answer": "RIL's Oil and Gas segment reported revenue of ₹23,861 crore (down 5.4% year-on-year) and EBITDA of ₹19,050 crore (down 10.1% year-on-year) for FY2025-26 — the only one of the five growth engines showing a decline rather than growth.",
+    "notes": "HIGH-VALUE REGRESSION CANARY: the only segment with a down arrow on this page, every other segment shows growth. Tests whether the decline direction survives extraction and whether generation correctly reports a decline instead of defaulting to positive-sounding framing. Also cross-checks against ril-001, whose Retail EBITDA figure (₹27,034 crore) matches this same page's Retail panel."
+  },
+  {
+    "id": "ril-013",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's consolidated net debt as at 31st March 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "Gross debt as on March 31, 2026 was ₹ 3,74,421 crore (US$ 39.5 billion) and Net debt stood at ₹ 1,24,717 crore (US$ 13.2 billion).",
+    "expected_page": 3,
+    "reference_answer": "RIL's consolidated net debt as at 31st March 2026 stood at ₹1,24,717 crore (approximately US$13.2 billion), with gross debt of ₹3,74,421 crore (US$39.5 billion).",
+    "notes": "New topic (net debt/leverage) not covered by prior entries - narrative summary paragraph, no table involved. VERIFY currency glyph encoding."
+  },
+  {
+    "id": "ril-014",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's capital expenditure for FY2025-26, and how did it compare to the previous year?",
+    "query_type": "qa",
+    "expected_context_snippet": "RIL's capital expenditure for FY 2025-26 stood at ₹ 1,44,271 crore (US$ 15.2 billion) as compared to ₹ 1,31,107 crore in the previous financial year. Capex requirements were adequately funded by cash profits.",
+    "expected_page": 3,
+    "reference_answer": "RIL's capital expenditure for FY2025-26 was ₹1,44,271 crore (approximately US$15.2 billion), up from ₹1,31,107 crore in the previous financial year, funded by cash profits and directed mainly toward O2C, New Energy, Digital Services, and Retail growth projects.",
+    "notes": "New topic (capex) not covered by prior entries - narrative paragraph."
+  },
+  {
+    "id": "ril-015",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RIL's standalone revenue and profit after tax for FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "Standalone revenue for RIL was ₹ 5,46,852 crore (US$ 57.7 billion), down 1.9% compared to the previous financial year. EBITDA stood at ₹ 78,085 crore (US$ 8.2 billion), growing 5.3% Y-o-Y. Standalone Profit After Tax was higher by 24.4%, at ₹ 43,851 crore (US$ 4.6 billion).",
+    "expected_page": 3,
+    "reference_answer": "RIL's standalone revenue for FY2025-26 was ₹5,46,852 crore (down 1.9% year-on-year), with EBITDA of ₹78,085 crore (up 5.3%) and Standalone Profit After Tax of ₹43,851 crore, up 24.4% year-on-year.",
+    "notes": "CROSS-VALIDATION ENTRY: this narrative paragraph restates figures already captured as raw table rows elsewhere (₹43,851 crore PAT and ₹5,46,852 crore revenue both appear in the standalone P&L/Highlights tables on page 78). Same underlying fact in two different textual forms (prose here vs. table there) - if retrieval only surfaces one representation and not the other, that's a useful signal about which extraction format the pipeline favors."
+  },
+  {
+    "id": "ril-016",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was RCPL's gross revenue for FY2025-26, and how did it grow?",
+    "query_type": "qa",
+    "expected_context_snippet": "RCPL's gross revenue doubled in the last one year to ₹ 22,000 crore. Growth has been fuelled by Staples and Beverages categories.",
+    "expected_page": 12,
+    "reference_answer": "RCPL's (Reliance Consumer Products Limited) gross revenue doubled year-on-year to ₹22,000 crore in FY2025-26, driven primarily by growth in the Staples and Beverages categories.",
+    "notes": "New business entity (RCPL, the FMCG arm) not covered by prior entries, which so far focused on Retail/Digital Services/O2C/Oil&Gas. Narrative paragraph in a magazine-style brand section."
+  },
+  {
+    "id": "ril-017",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What is RCPL's distribution reach in terms of distributors and outlets?",
+    "query_type": "qa",
+    "expected_context_snippet": "5,000+ DISTRIBUTORS 3 Million+ OUTLET REACH PRESENCE IN 40+ Countries OPERATING IN 60+ Sub-categories",
+    "expected_page": 12,
+    "reference_answer": "RCPL has 5,000+ distributors and reaches 3 million+ outlets, with a presence in 40+ countries and operations across 60+ sub-categories.",
+    "notes": "Stat-callout tile layout (large bold number + short label, not full sentences) - a new extraction risk category distinct from prose, tables, and the segment infographic panels seen so far. HIGH UNCERTAINTY: verify whether these terse tiles keep their number-label pairing after extraction (e.g. '5,000+' could get separated from 'DISTRIBUTORS' if layout isn't preserved)."
+  },
+  {
+    "id": "ril-018",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What box-office record did Jio Studios achieve in FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "40%+ of India box office in FY 2025-26 Dhurandhar franchise, highest grossing Indian film ever, delivered ₹3,000 crore+ worldwide",
+    "expected_page": 17,
+    "reference_answer": "Jio Studios' Dhurandhar franchise became the highest-grossing Indian film ever, capturing 40%+ of India's box office in FY2025-26 and delivering over ₹3,000 crore worldwide.",
+    "notes": "Stat-tile + narrative cross-reference: the page's intro paragraph claims 'India's highest grossing film of all time,' and this Jio Studios tile substantiates it with the specific franchise name and figures. Same magazine stat-tile layout as ril-016/017."
+  },
+  {
+    "id": "ril-019",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What viewership records did JioHotstar set during the T20 World Cup 2026?",
+    "query_type": "qa",
+    "expected_context_snippet": "72.5 Million Peak concurrency (global record) achieved by JioHotstar during T20 World Cup 2026 956 Million ICC T20 World Cup Reach (TV + Digital)",
+    "expected_page": 17,
+    "reference_answer": "JioHotstar achieved a global-record peak concurrency of 72.5 million viewers during the T20 World Cup 2026, with total ICC T20 World Cup reach of 956 million across TV and digital combined.",
+    "notes": "Sports stat-tile pair including a 'global record' claim - tests whether retrieval preserves the specific record-holder context (JioHotstar, T20 World Cup 2026) alongside the raw numbers, not just the numbers in isolation."
+  },
+  {
+    "id": "ril-020",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What was JioHotstar's average Monthly Active Users (MAU) in FY2025-26?",
+    "query_type": "qa",
+    "expected_context_snippet": "451 Million Average MAUs of JioHotstar in FY 2025-26, 48% growth over last year. Sustained across sports & non-sports months",
+    "expected_page": 17,
+    "reference_answer": "JioHotstar's average Monthly Active Users (MAU) in FY2025-26 was 451 million, up 48% year-on-year, with growth sustained across both sports and non-sports months.",
+    "notes": "Digital Platform stat tile - distinct metric from the sports viewership records in ril-019 despite both referencing JioHotstar. Tests whether retrieval can distinguish between multiple related-but-different metrics for the same brand on the same page."
+  },
+  {
+    "id": "ril-021",
+    "file_id": "data/raw/ril.pdf",
+    "query": "Calculate RIL's standalone Return on Assets (ROA) for FY2025-26.",
+    "query_type": "calculation",
+    "expected_context_snippets": ["43,851", "11,65,809"],
+    "expected_pages": [3, 112],
+    "reference_answer": "RIL's standalone Return on Assets (ROA) for FY2025-26 was approximately 3.76%, calculated as Standalone PAT of ₹43,851 crore divided by Standalone Total Assets of ₹11,65,809 crore.",
+    "notes": "Genuine calculation query - ROA isn't stated directly anywhere in the document, requiring retrieval to pull PAT (page 3 narrative, also in the page 78 table) AND Total Assets (page 112) as separate facts, then the LLM computes the ratio itself. Tests Retriever._retrieve_for_calculation's targeted multi-query retrieval and whether generation's arithmetic matches the true figure (43851/1165809 = 3.76%). First entry using the plural expected_context_snippets/expected_pages schema, since calculation queries need multiple facts, not one."
+  },
+  {
+    "id": "ril-022",
+    "file_id": "data/raw/ril.pdf",
+    "query": "Compare RIL's standalone Total Assets and Total Other Equity between FY2025-26 and FY2024-25.",
+    "query_type": "comparison",
+    "expected_context_snippets": ["11,65,809", "10,22,401", "5,52,703", "5,29,555"],
+    "expected_pages": [112, 116],
+    "reference_answer": "RIL's standalone Total Assets grew from ₹10,22,401 crore (FY2024-25) to ₹11,65,809 crore (FY2025-26), while Total Other Equity grew from ₹5,29,555 crore to ₹5,52,703 crore over the same period.",
+    "notes": "Genuine comparison query spanning two different pages/tables (Balance Sheet page 112, Statement of Changes in Equity page 116) and two years each - exercises QueryEnhancer.decompose_complex_query's multi-query decomposition rather than a single-fact lookup."
+  },
+  {
+    "id": "ril-023",
+    "file_id": "data/raw/ril.pdf",
+    "query": "What dividend did RIL recommend, what was its total tax expense, and what were its non-current borrowings for FY2025-26?",
+    "query_type": "comparison",
+    "expected_context_snippets": ["8,119", "27,552", "2,70,751"],
+    "expected_pages": [78, 218, 222],
+    "reference_answer": "RIL recommended a dividend of ₹6 per equity share (₹8,119 crore aggregate) for FY2025-26, reported consolidated total tax expense of ₹27,552 crore, and had consolidated total Non-Current Borrowings of ₹2,70,751 crore.",
+    "notes": "Genuinely complex/multi-part query bundling THREE unrelated facts from three distant pages (78, 218, 222) - forces decompose_complex_query to split into sub-queries and multi_query_retrieve to merge results from disjoint parts of the document, unlike ril-022 which compared the same two metrics across two years. FINDING: this gets classified as query_type='comparison' by _detect_query_type's len(sub_queries)>1 check, same as a true side-by-side comparison, even though there's no comparative relationship between dividend/tax/borrowings - COMPARISON_PROMPT's 'use a table' instruction may be a poor fit for a bundled multi-fact answer like this one. Worth deciding later whether 'complex/multi-part' deserves its own query_type distinct from true comparisons."
+  }
+]
